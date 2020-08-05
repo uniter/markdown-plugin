@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "name": "uniter-markdown-plugin",
+  "description": "A Uniter plugin to add support for an inline Markdown syntax to PHP (experimental)",
+  "keywords": [
+    "uniter",
+    "php",
+    "markdown",
+    "plugin"
+  ],
+  "homepage": "https://github.com/uniter/markdown-plugin",
+  "author": "Dan Phillimore <dan@ovms.co> (https://github.com/asmblah)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uniter/markdown-plugin"
+  },
+  "bugs": {
+    "email": "dan@ovms.co",
+    "url": "https://github.com/uniter/markdown-plugin/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**",
+    "src/**",
+    "MIT-LICENSE.txt",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p src",
+    "jest": "jest '/test/.*\\.test\\.ts$'",
+    "lint:check": "eslint '{src,test}/**/*.ts' && tsc --noEmit",
+    "lint:fix": "eslint '{src,test}/**/*.ts' --fix",
+    "prepublishOnly": "npm test && npm run build",
+    "test": "npm run lint:check && npm run jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.27",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "dotphp": "^3.7.0",
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.2.2",
+    "prettier": "^2.0.5",
+    "source-map": "^0.7.3",
+    "ts-jest": "^26.1.4",
+    "ts-sinon": "^1.2.0",
+    "typescript": "^3.9.7"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "license": "MIT"
+}
