@@ -2,11 +2,11 @@
 
 [![Build Status](https://github.com/uniter/markdown-plugin/workflows/CI/badge.svg)](https://github.com/uniter/markdown-plugin/actions?query=workflow%3ACI)
 
-Implements an inline [Markdown]() syntax in PHP for [Uniter]().
+Implements an inline [Markdown][] syntax in PHP for [Uniter][].
 
 ## What?
 
-Please note that you *probably shouldn't use this in production*. It's intended to demonstrate the [unified platform config]() feature of Uniter only.
+Please note that you *probably shouldn't use this in production*. It's intended to demonstrate the [unified platform config][] feature of Uniter only.
 That said, feel free to contribute any improvements that still fit within that (admittedly contrived) use-case.
 
 In reality, you'd probably want to avoid extending PHP's syntax for this particular feature, or at least perform a PHP source-to-source transpilation.
@@ -53,7 +53,7 @@ return $myMarkdownTree->toHtml();
 
 ### Run it
 
-Note that the `uniter.config.js` file [will be detected automatically](),
+Note that the `uniter.config.js` file [will be detected automatically][],
 assuming it is in the same folder as your entry script:
 
 ```shell
