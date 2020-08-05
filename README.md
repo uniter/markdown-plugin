@@ -64,7 +64,7 @@ $ uniter my_markdown.php
 
 ### Not designed for production use!
 
-[As above](#What?), I don't recommend you use this plugin in production - but feel free to experiment!
+[As above](#what), I don't recommend you use this plugin in production - but feel free to experiment!
 
 ### "Free" special characters are not consistently supported
 
