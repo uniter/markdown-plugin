@@ -13,6 +13,11 @@ export default class ExpressionNode implements ElementNodeInterface {
     constructor(private expression: unknown) {}
 
     toHtml(): string {
+        if (this.expression === null) {
+            // Use this placeholder for obviousness rather than an empty string as per PHP
+            return '[NULL]';
+        }
+
         if (
             typeof this.expression !== 'string' &&
             typeof this.expression !== 'number'

@@ -151,6 +151,24 @@ return $myMarkdownTree->toHtml();
         );
     });
 
+    it('should be able to render a parsed Markdown tree containing a null interpolated variable', () => {
+        const resultValue = dotPHP.evaluateSync(
+            `
+<?php
+
+$myMissingValue = null;
+
+$myMarkdownTree = markdown {It is missing: $myMissingValue!};
+
+return $myMarkdownTree->toHtml();
+`,
+            '/my/module.php'
+        );
+
+        expect(resultValue.getType()).toEqual('string');
+        expect(resultValue.getNative()).toEqual('It is missing: [NULL]!');
+    });
+
     it('should be able to render a parsed Markdown tree containing an unordered list with two items, embedded formatting and interpolated variable', () => {
         const resultValue = dotPHP.evaluateSync(
             `
