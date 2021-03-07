@@ -8,19 +8,47 @@
  */
 
 import ElementNodeInterface from './ElementNodeInterface';
+import { FFIResult, InternalsInterface } from 'phpcore';
 
 export default class ListItemNode implements ElementNodeInterface {
-    constructor(private elements: ElementNodeInterface[]) {}
+    constructor(
+        private internals: InternalsInterface,
+        private elements: ElementNodeInterface[]
+    ) {}
 
-    toHtml(): string {
-        return (
-            '<li>' +
-            this.elements.map((element) => element.toHtml()).join('') +
-            '</li>'
+    toHtml(): FFIResult<string> {
+        const valueHelper = this.internals.valueHelper;
+
+        return this.internals.createFFIResult(
+            () => {
+                // For both sync and psync modes
+                return (
+                    '<li>' +
+                    this.elements
+                        .map((element) =>
+                            valueHelper.toNativeWithSyncApi(element)
+                        )
+                        .map((element) => element.toHtml())
+                        .join('') +
+                    '</li>'
+                );
+            },
+            () => {
+                // Only for async mode
+                return Promise.all(
+                    this.elements.map((element) => element.toHtml())
+                ).then((htmls) => {
+                    return '<li>' + htmls.join('') + '</li>';
+                });
+            }
         );
     }
 }
 
-export const factory = (): typeof ListItemNode => {
-    return ListItemNode;
+export const factory = (internals: InternalsInterface): unknown => {
+    return class ModeSpecificListItemNode extends ListItemNode {
+        constructor(elements: ElementNodeInterface[]) {
+            super(internals, elements);
+        }
+    };
 };

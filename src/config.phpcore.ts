@@ -22,7 +22,7 @@ export = {
         {
             // Expose all the classes that will be instantiated to represent the nodes
             // of the Markdown document to PHP-land:
-            classGroups: (): object => {
+            classGroups: (): Record<string, unknown> => {
                 return {
                     'Uniter\\Markdown\\Node\\BoldNode': BoldNode as unknown,
                     'Uniter\\Markdown\\Node\\DocumentNode': DocumentNode as unknown,

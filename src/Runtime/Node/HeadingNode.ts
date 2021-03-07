@@ -8,24 +8,49 @@
  */
 
 import ElementNodeInterface from './ElementNodeInterface';
+import { FFIResult, InternalsInterface } from 'phpcore';
 
 export default class HeadingNode implements ElementNodeInterface {
     constructor(
+        private internals: InternalsInterface,
         private level: number,
         private elements: ElementNodeInterface[]
     ) {}
 
-    toHtml(): string {
+    toHtml(): FFIResult<string> {
+        const valueHelper = this.internals.valueHelper;
         const tagName = 'h' + this.level;
 
-        return (
-            `<${tagName}>` +
-            this.elements.map((element) => element.toHtml()).join('') +
-            `</${tagName}>`
+        return this.internals.createFFIResult(
+            () => {
+                // For both sync and psync modes
+                return (
+                    `<${tagName}>` +
+                    this.elements
+                        .map((element) =>
+                            valueHelper.toNativeWithSyncApi(element)
+                        )
+                        .map((element) => element.toHtml())
+                        .join('') +
+                    `</${tagName}>`
+                );
+            },
+            () => {
+                // Only for async mode
+                return Promise.all(
+                    this.elements.map((element) => element.toHtml())
+                ).then((htmls) => {
+                    return `<${tagName}>` + htmls.join('') + `</${tagName}>`;
+                });
+            }
         );
     }
 }
 
-export const factory = (): typeof HeadingNode => {
-    return HeadingNode;
+export const factory = (internals: InternalsInterface): unknown => {
+    return class ModeSpecificHeadingNode extends HeadingNode {
+        constructor(level: number, elements: ElementNodeInterface[]) {
+            super(internals, level, elements);
+        }
+    };
 };

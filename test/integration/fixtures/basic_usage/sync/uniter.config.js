@@ -10,13 +10,16 @@
 module.exports = {
     'plugins': [
         // Import this plugin itself
-        require('../../../..'),
+        require('../../../../..'),
     ],
     'settings': {
         'dotphp': {
             // Just for the purposes of these integration tests, turn off the standard I/O
             // hookup, so that we don't end up dumping out to stdout or stderr during the test run
             'stdio': false,
+        },
+        'phptojs': {
+            'mode': 'sync',
         },
     },
 };

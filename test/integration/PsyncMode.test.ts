@@ -10,17 +10,17 @@
 import dotPHPFactory = require('dotphp');
 import type { DotPHPFactoryInterface, DotPHPInterface } from 'dotphp';
 
-describe('Basic markdown usage integration', () => {
+describe('Basic markdown usage integration (Promise-synchronous mode)', () => {
     let dotPHP: DotPHPInterface;
 
     beforeEach(() => {
         dotPHP = (dotPHPFactory as DotPHPFactoryInterface).create(
-            __dirname + '/fixtures/basic_usage'
+            __dirname + '/fixtures/basic_usage/psync'
         );
     });
 
-    it('should be able to render a parsed Markdown tree containing just plain text', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing just plain text', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -37,8 +37,8 @@ return $myMarkdownTree->toHtml();
         expect(resultValue.getNative()).toEqual('Hello world!');
     });
 
-    it('should be able to render a parsed Markdown tree containing just special characters', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing just special characters', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -57,8 +57,8 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should be able to render a parsed Markdown tree containing two bold sections using both syntaxes', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing two bold sections using both syntaxes', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -75,8 +75,8 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should be able to render a parsed Markdown tree containing two nested bold & italic sections, using both syntaxes', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing two nested bold & italic sections, using both syntaxes', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -93,8 +93,8 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should be able to render a parsed Markdown tree containing two italic sections using both syntaxes', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing two italic sections using both syntaxes', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -111,8 +111,8 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should be able to render a parsed Markdown tree containing an unordered list with a single item', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing an unordered list with a single item', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -131,8 +131,8 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should be able to render a parsed Markdown tree containing a single bold section with interpolated variable', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing a single bold section with interpolated variable', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -151,26 +151,8 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should be able to render a parsed Markdown tree containing a null interpolated variable', () => {
-        const resultValue = dotPHP.evaluateSync(
-            `
-<?php
-
-$myMissingValue = null;
-
-$myMarkdownTree = markdown {It is missing: $myMissingValue!};
-
-return $myMarkdownTree->toHtml();
-`,
-            '/my/module.php'
-        );
-
-        expect(resultValue.getType()).toEqual('string');
-        expect(resultValue.getNative()).toEqual('It is missing: [NULL]!');
-    });
-
-    it('should be able to render a parsed Markdown tree containing an unordered list with two items, embedded formatting and interpolated variable', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed Markdown tree containing an unordered list with two items, embedded formatting and interpolated variable', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -192,8 +174,8 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should be able to render a parsed complex Markdown tree', () => {
-        const resultValue = dotPHP.evaluateSync(
+    it('should be able to render a parsed complex Markdown tree', async () => {
+        const resultValue = await dotPHP.evaluate(
             `
 <?php
 
@@ -217,9 +199,9 @@ return $myMarkdownTree->toHtml();
         );
     });
 
-    it('should not support unescaped free special characters', () => {
-        expect(() => {
-            dotPHP.evaluateSync(
+    it('should not support unescaped free special characters', async () => {
+        await expect(async () => {
+            await dotPHP.evaluate(
                 `
 <?php
 
@@ -229,6 +211,6 @@ $myMarkdownTree = markdown {
 `,
                 '/my/module.php'
             );
-        }).toThrow('PHP Parse error: syntax error');
+        }).rejects.toThrow('PHP Parse error: syntax error');
     });
 });

@@ -7,6 +7,8 @@
  * https://github.com/uniter/markdown-plugin/raw/master/MIT-LICENSE.txt
  */
 
+import { FFIResult } from 'phpcore';
+
 export default interface ElementNodeInterface {
-    toHtml(): string;
+    toHtml(): FFIResult<string> | string;
 }

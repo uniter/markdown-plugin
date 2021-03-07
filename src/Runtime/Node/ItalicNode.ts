@@ -8,19 +8,47 @@
  */
 
 import ElementNodeInterface from './ElementNodeInterface';
+import { FFIResult, InternalsInterface } from 'phpcore';
 
 export default class ItalicNode implements ElementNodeInterface {
-    constructor(private elements: ElementNodeInterface[]) {}
+    constructor(
+        private internals: InternalsInterface,
+        private elements: ElementNodeInterface[]
+    ) {}
 
-    toHtml(): string {
-        return (
-            '<em>' +
-            this.elements.map((element) => element.toHtml()).join('') +
-            '</em>'
+    toHtml(): FFIResult<string> {
+        const valueHelper = this.internals.valueHelper;
+
+        return this.internals.createFFIResult(
+            () => {
+                // For both sync and psync modes
+                return (
+                    '<em>' +
+                    this.elements
+                        .map((element) =>
+                            valueHelper.toNativeWithSyncApi(element)
+                        )
+                        .map((element) => element.toHtml())
+                        .join('') +
+                    '</em>'
+                );
+            },
+            () => {
+                // Only for async mode
+                return Promise.all(
+                    this.elements.map((element) => element.toHtml())
+                ).then((htmls) => {
+                    return '<em>' + htmls.join('') + '</em>';
+                });
+            }
         );
     }
 }
 
-export const factory = (): typeof ItalicNode => {
-    return ItalicNode;
+export const factory = (internals: InternalsInterface): unknown => {
+    return class ModeSpecificItalicNode extends ItalicNode {
+        constructor(elements: ElementNodeInterface[]) {
+            super(internals, elements);
+        }
+    };
 };

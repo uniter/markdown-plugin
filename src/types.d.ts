@@ -21,7 +21,10 @@ declare module 'dotphp' {
     }
 
     export interface DotPHPInterface {
-        evaluateSync(php: string, filePath: string): ValueInterface;
+        evaluate(
+            php: string,
+            filePath: string
+        ): Promise<ValueInterface> | ValueInterface;
     }
 }
 
@@ -59,9 +62,33 @@ declare module 'parsing' {
 }
 
 declare module 'phpcore' {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    export type native = boolean | Function | number | string;
+
     export interface ValueInterface {
-        getNative(): boolean | Function | number | string;
+        getNative(): native;
 
         getType(): string;
+    }
+
+    export interface FFIResult<T extends ValueInterface | native> {
+        getAsync(): Promise<T>;
+
+        getSync(): T;
+    }
+
+    export interface ValueHelperInterface {
+        toNativeWithSyncApi<T>(proxy: T): T;
+    }
+
+    export interface InternalsInterface {
+        createFFIResult<T extends ValueInterface | native>(
+            getSync: () => ValueInterface | native,
+            getAsync: () => Promise<ValueInterface | native>
+        ): FFIResult<T>;
+
+        isSyncMode(): boolean;
+
+        valueHelper: ValueHelperInterface;
     }
 }
