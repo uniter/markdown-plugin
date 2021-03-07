@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "uniter-markdown-plugin",
   "description": "A Uniter plugin to add support for an inline Markdown syntax to PHP (experimental)",
   "keywords": [
